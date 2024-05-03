@@ -3,16 +3,19 @@ package com.example.criticaltechworkschallenge.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.criticaltechworkschallenge.Article
 import com.example.criticaltechworkschallenge.R
+import com.squareup.picasso.Picasso
 
-class NewsAdapter(private val titleList: List<String>, private val descriptionList: List<String>) :
+class NewsAdapter(private val articles: MutableList<Article>) :
     RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.title)
-        val description: TextView = itemView.findViewById(R.id.description)
+        val image: ImageView = itemView.findViewById(R.id.image)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,11 +25,22 @@ class NewsAdapter(private val titleList: List<String>, private val descriptionLi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = titleList[position]
-        holder.description.text = descriptionList[position]
+        val article = articles[position]
+
+        holder.title.text = article.title
+
+        article.urlToImage?.let {
+            Picasso.get().load(it).into(holder.image)
+        }
     }
 
     override fun getItemCount(): Int {
-        return titleList.size
+        return articles.size
+    }
+
+    fun updateData(newArticles: List<Article>) {
+        articles.clear()
+        articles.addAll(newArticles)
+        notifyDataSetChanged()
     }
 }

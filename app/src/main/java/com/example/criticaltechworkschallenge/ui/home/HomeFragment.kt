@@ -45,11 +45,16 @@ class HomeFragment : Fragment() {
         _title.text = _vm.text.value
         _title2.text = _vm.text.value
 
-        // Set adapters
-        _adapter = NewsAdapter(_vm.titleList, _vm.descriptionList)
-        _recyclerView.layoutManager = LinearLayoutManager(context)
 
+        // Set adapters
+        _adapter = NewsAdapter(mutableListOf())
+        _recyclerView.layoutManager = LinearLayoutManager(context)
+        
         _recyclerView.adapter = _adapter
+
+        _vm.articles.observe(viewLifecycleOwner) { articles ->
+            _adapter.updateData(articles)
+        }
 
         return view
     }

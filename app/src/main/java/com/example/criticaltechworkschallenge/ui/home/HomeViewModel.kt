@@ -1,8 +1,17 @@
 package com.example.criticaltechworkschallenge.ui.home
 
+import retrofit2.Call
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.criticaltechworkschallenge.Article
+import com.example.criticaltechworkschallenge.Constants
+import com.example.criticaltechworkschallenge.NewsResponse
+import com.example.criticaltechworkschallenge.NewsService
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeViewModel : ViewModel() {
 
@@ -11,7 +20,38 @@ class HomeViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
-    val titleList = listOf("Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9", "Title 10", "Title 11", "Title 12", "Title 13", "Title 14", "Title 15", "Title 16", "Title 17", "Title 18", "Title 19", "Title 20")
+    private val _articles = MutableLiveData<List<Article>>()
+    val articles: LiveData<List<Article>> = _articles
 
-    val descriptionList = listOf("Description 1", "Description 2", "Description 3", "Description 4", "Description 5", "Description 6", "Description 7", "Description 8", "Description 9", "Description 10", "Description 11", "Description 12", "Description 13", "Description 14", "Description 15", "Description 16", "Description 17", "Description 18", "Description 19", "Description 20")
+    init {
+        loadHeadlines()
+    }
+
+    private fun loadHeadlines() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://newsapi.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(NewsService::class.java)
+        val call = service.getTopHeadlines(
+            Constants.SOURCE,
+            Constants.API_KEY )
+
+        call.enqueue(object : Callback<NewsResponse> {
+            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+                if (response.isSuccessful) {
+                    val articles = response.body()?.articles ?: emptyList()
+                    _articles.postValue(articles)
+                } else {
+                    // Handle error
+                }
+            }
+
+            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                // Handle failure
+            }
+        })
+    }
+
 }
