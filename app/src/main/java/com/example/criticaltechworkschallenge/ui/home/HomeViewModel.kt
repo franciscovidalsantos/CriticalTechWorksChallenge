@@ -8,6 +8,7 @@ import com.example.criticaltechworkschallenge.Article
 import com.example.criticaltechworkschallenge.Constants
 import com.example.criticaltechworkschallenge.NewsResponse
 import com.example.criticaltechworkschallenge.NewsService
+import com.example.criticaltechworkschallenge.enums.SourcesEnum
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -23,20 +24,26 @@ class HomeViewModel : ViewModel() {
     private val _articles = MutableLiveData<List<Article>>()
     val articles: LiveData<List<Article>> = _articles
 
+    private val _newsSource = MutableLiveData<String>().apply {
+        value = SourcesEnum.BBC_NEWS.source
+    }
+    val newsSource: LiveData<String> = _newsSource
+
     init {
         loadHeadlines()
     }
 
     private fun loadHeadlines() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://newsapi.org/")
+            .baseUrl(Constants.URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(NewsService::class.java)
         val call = service.getTopHeadlines(
-            Constants.SOURCE,
-            Constants.API_KEY )
+            newsSource.value.toString(),
+            Constants.API_KEY
+        )
 
         call.enqueue(object : Callback<NewsResponse> {
             override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {

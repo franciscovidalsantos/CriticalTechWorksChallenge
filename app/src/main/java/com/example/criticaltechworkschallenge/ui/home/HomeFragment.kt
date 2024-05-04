@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.criticaltechworkschallenge.adapters.NewsAdapter
 import com.example.criticaltechworkschallenge.R
+import com.example.criticaltechworkschallenge.adapters.NewsAdapter
+
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +32,8 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         _vm = ViewModelProvider(this)[HomeViewModel::class.java]
+        (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+            _vm.newsSource.value // temporary provider
 
         return init(view)
     }
@@ -49,7 +53,7 @@ class HomeFragment : Fragment() {
         // Set adapters
         _adapter = NewsAdapter(mutableListOf())
         _recyclerView.layoutManager = LinearLayoutManager(context)
-        
+
         _recyclerView.adapter = _adapter
 
         _vm.articles.observe(viewLifecycleOwner) { articles ->
