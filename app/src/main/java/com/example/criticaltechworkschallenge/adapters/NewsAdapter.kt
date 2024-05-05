@@ -11,26 +11,30 @@ import com.example.criticaltechworkschallenge.R
 import com.squareup.picasso.Picasso
 
 class NewsAdapter(private val articles: MutableList<Article>) :
-    RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private var listener: OnItemClickListener? = null
+
+    class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.title)
         val image: ImageView = itemView.findViewById(R.id.image)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.news_item, parent, false)
-        return ViewHolder(itemView)
+        return NewsViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val article = articles[position]
 
         holder.title.text = article.title
+        Picasso.get().load(article.urlToImage).into(holder.image)
 
-        article.urlToImage?.let {
-            Picasso.get().load(it).into(holder.image)
+
+        holder.itemView.setOnClickListener {
+            listener?.onItemClick(position)
         }
     }
 
@@ -42,5 +46,13 @@ class NewsAdapter(private val articles: MutableList<Article>) :
         articles.clear()
         articles.addAll(newArticles)
         notifyDataSetChanged()
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
     }
 }

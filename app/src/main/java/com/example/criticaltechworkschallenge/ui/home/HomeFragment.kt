@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.criticaltechworkschallenge.MainActivity
 import com.example.criticaltechworkschallenge.R
 import com.example.criticaltechworkschallenge.adapters.NewsAdapter
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), NewsAdapter.OnItemClickListener {
 
     private lateinit var _vm: HomeViewModel
 
@@ -32,8 +33,8 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         _vm = ViewModelProvider(this)[HomeViewModel::class.java]
-        (activity as AppCompatActivity?)!!.supportActionBar!!.title =
-            _vm.newsSource.value // temporary provider
+        val parent = activity as MainActivity;
+        parent.supportActionBar?.title = _vm.newsSource.value
 
         return init(view)
     }
@@ -52,6 +53,8 @@ class HomeFragment : Fragment() {
 
         // Set adapters
         _adapter = NewsAdapter(mutableListOf())
+        _adapter.setOnItemClickListener(this)
+
         _recyclerView.layoutManager = LinearLayoutManager(context)
 
         _recyclerView.adapter = _adapter
@@ -65,5 +68,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+    }
+
+    override fun onItemClick(article: Article) {
+        findNavController().navigate(R.id.navigation_news_details)
     }
 }
