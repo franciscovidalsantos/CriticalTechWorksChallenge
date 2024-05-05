@@ -21,4 +21,10 @@
         android:name="com.example.criticaltechworkschallenge.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_news_details"
+        android:name="com.example.criticaltechworkschallenge.ui.newsDetails.NewsDetailsFragment"
+        tools:layout="@layout/fragment_news_details" />
+
 </navigation>
