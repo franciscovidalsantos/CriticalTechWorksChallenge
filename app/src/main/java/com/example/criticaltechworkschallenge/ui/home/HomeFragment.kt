@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.criticaltechworkschallenge.Article
 import com.example.criticaltechworkschallenge.MainActivity
 import com.example.criticaltechworkschallenge.R
 import com.example.criticaltechworkschallenge.adapters.NewsAdapter
@@ -56,7 +57,6 @@ class HomeFragment : Fragment(), NewsAdapter.OnItemClickListener {
         _adapter.setOnItemClickListener(this)
 
         _recyclerView.layoutManager = LinearLayoutManager(context)
-
         _recyclerView.adapter = _adapter
 
         _vm.articles.observe(viewLifecycleOwner) { articles ->
@@ -71,6 +71,13 @@ class HomeFragment : Fragment(), NewsAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(article: Article) {
-        findNavController().navigate(R.id.navigation_news_details)
+        val bundle = Bundle()
+        bundle.putString("titleArg", article.title)
+        bundle.putString("urlToImageArg", article.urlToImage)
+        bundle.putString("descriptionArg", article.description)
+        bundle.putString("contentArg", article.content)
+        bundle.putString("urlArg", article.url)
+
+        findNavController().navigate(R.id.navigation_news_details, bundle)
     }
 }

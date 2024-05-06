@@ -1,6 +1,5 @@
 package com.example.criticaltechworkschallenge.ui.home
 
-import retrofit2.Call
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,7 @@ import com.example.criticaltechworkschallenge.Constants
 import com.example.criticaltechworkschallenge.NewsResponse
 import com.example.criticaltechworkschallenge.NewsService
 import com.example.criticaltechworkschallenge.enums.SourcesEnum
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -25,7 +25,7 @@ class HomeViewModel : ViewModel() {
     val articles: LiveData<List<Article>> = _articles
 
     private val _newsSource = MutableLiveData<String>().apply {
-        value = SourcesEnum.BBC_NEWS.source
+        value = SourcesEnum.BBC_NEWS.id
     }
     val newsSource: LiveData<String> = _newsSource
 

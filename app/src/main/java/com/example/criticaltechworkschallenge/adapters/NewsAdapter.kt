@@ -34,7 +34,7 @@ class NewsAdapter(private val articles: MutableList<Article>) :
 
 
         holder.itemView.setOnClickListener {
-            listener?.onItemClick(position)
+            listener?.onItemClick(article)
         }
     }
 
@@ -49,7 +49,7 @@ class NewsAdapter(private val articles: MutableList<Article>) :
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(article:Article)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
