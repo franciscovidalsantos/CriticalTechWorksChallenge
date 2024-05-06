@@ -2,7 +2,12 @@ package com.example.criticaltechworkschallenge
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -17,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        checkBiometrics()
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -33,6 +40,67 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+
+    private fun checkBiometrics() {
+        if (isFingerprintAvailable()) {
+            // authentication
+            authenticateWithFingerprint()
+        } else {
+            // if fingerprint authentication is not available navigate normally
+            showToast("Fingerprint authentication not available")
+        }
+    }
+
+    private fun isFingerprintAvailable(): Boolean {
+        val biometricManager = BiometricManager.from(this)
+        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BIOMETRIC_SUCCESS
+    }
+
+    private fun authenticateWithFingerprint() {
+        val executor = ContextCompat.getMainExecutor(this)
+        val biometricPrompt =
+            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+                // if cancels, ignores
+                override fun onAuthenticationError(errorCode: Int, errorString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errorString)
+                    if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON
+                        || errorCode == BiometricPrompt.ERROR_CANCELED
+                        || errorCode == BiometricPrompt.ERROR_USER_CANCELED
+                    ) {
+                        showToast("Authentication cancelled")
+                        finish() // exit the app
+                    } else {
+                        showToast("Authentication error: $errorString")
+                    }
+                }
+
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    showToast("Authentication succeeded")
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    showToast("Authentication failed")
+                    finish() // exit the app
+
+                }
+            })
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Fingerprint Authentication")
+            .setSubtitle("Place your finger on the sensor")
+            .setNegativeButtonText("Cancel")
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
