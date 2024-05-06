@@ -5,6 +5,9 @@ My Setup
 • Used Android Studio Jellyfish version  
 • Simulated on Pixel 8 Pro API 33
 
+API  
+• replace "YOUR_API_KEY" with your own API key in Constants file
+
 Introduction  
 You will build a smartphone app that should be able to show top headlines for a specific source (BBC news)
 https://newsapi.org/docs/endpoints/top-headlines
