@@ -16,24 +16,32 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    private val _buttonText = MutableLiveData<String>().apply {
+        value = "Click to select a new source"
     }
-    val text: LiveData<String> = _text
+    val buttonText: LiveData<String> = _buttonText
 
     private val _articles = MutableLiveData<List<Article>>()
     val articles: LiveData<List<Article>> = _articles
 
-    private val _newsSource = MutableLiveData<String>().apply {
-        value = SourcesEnum.BBC_NEWS.id
+    private val _newsSource = MutableLiveData<SourcesEnum>().apply {
+        value = SourcesEnum.BBC_NEWS // default source
     }
-    val newsSource: LiveData<String> = _newsSource
+    val newsSource: LiveData<SourcesEnum> = _newsSource
+
+    fun updateSource(newSource: SourcesEnum) {
+        _newsSource.value = newSource
+    }
+
 
     init {
         loadHeadlines()
     }
 
-    private fun loadHeadlines() {
+    fun loadHeadlines() {
+
+        val currentSource = newsSource.value?.id.toString()
+
         val retrofit = Retrofit.Builder()
             .baseUrl(Constants.URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -41,7 +49,7 @@ class HomeViewModel : ViewModel() {
 
         val service = retrofit.create(NewsService::class.java)
         val call = service.getTopHeadlines(
-            newsSource.value.toString(),
+            currentSource,
             Constants.API_KEY
         )
 
@@ -60,5 +68,4 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
-
 }
