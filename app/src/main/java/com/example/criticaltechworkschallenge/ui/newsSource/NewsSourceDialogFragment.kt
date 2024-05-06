@@ -13,13 +13,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.criticaltechworkschallenge.MainActivity
 import com.example.criticaltechworkschallenge.R
 import com.example.criticaltechworkschallenge.enums.SourcesEnum
-import com.example.criticaltechworkschallenge.ui.newsDetails.NewsDetailsViewModel
+import com.example.criticaltechworkschallenge.ui.articleDetails.ArticleDetailsViewModel
 
 class NewsSourceDialogFragment : DialogFragment() {
 
     private var _listener: NewsSourceSelectionListener? = null
 
-    private lateinit var _vm: NewsDetailsViewModel
+    private lateinit var _vm: ArticleDetailsViewModel
 
     private lateinit var _title: TextView
     private lateinit var _list: ListView
@@ -31,7 +31,7 @@ class NewsSourceDialogFragment : DialogFragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_news_source_dialog, container, false)
 
-        _vm = ViewModelProvider(this)[NewsDetailsViewModel::class.java]
+        _vm = ViewModelProvider(this)[ArticleDetailsViewModel::class.java]
         val parent = activity as MainActivity;
 
         return init(view)

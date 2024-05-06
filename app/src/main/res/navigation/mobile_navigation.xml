@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/navigation_news_details"
-        android:name="com.example.criticaltechworkschallenge.ui.newsDetails.NewsDetailsFragment"
-        tools:layout="@layout/fragment_news_details" />
+        android:name="com.example.criticaltechworkschallenge.ui.articleDetails.ArticleDetailsFragment"
+        tools:layout="@layout/fragment_article_details" />
 
 </navigation>

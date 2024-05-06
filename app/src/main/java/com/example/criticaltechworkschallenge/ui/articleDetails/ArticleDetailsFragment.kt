@@ -1,4 +1,4 @@
-package com.example.criticaltechworkschallenge.ui.newsDetails
+package com.example.criticaltechworkschallenge.ui.articleDetails
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +12,9 @@ import com.example.criticaltechworkschallenge.MainActivity
 import com.example.criticaltechworkschallenge.R
 import com.squareup.picasso.Picasso
 
-class NewsDetailsFragment : Fragment() {
+class ArticleDetailsFragment : Fragment() {
 
-    private lateinit var _vm: NewsDetailsViewModel
+    private lateinit var _vm: ArticleDetailsViewModel
 
     private lateinit var _title: TextView
     private lateinit var _image: ImageView
@@ -28,9 +28,9 @@ class NewsDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val view = inflater.inflate(R.layout.fragment_news_details, container, false)
+        val view = inflater.inflate(R.layout.fragment_article_details, container, false)
 
-        _vm = ViewModelProvider(this)[NewsDetailsViewModel::class.java]
+        _vm = ViewModelProvider(this)[ArticleDetailsViewModel::class.java]
         val parent = activity as MainActivity;
         parent.supportActionBar?.title = "Article Details"
 
