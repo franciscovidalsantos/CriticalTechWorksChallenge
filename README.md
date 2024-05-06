@@ -42,3 +42,7 @@ Bonus Story 4: A new flavor should be created to present news for another source
 Acceptance criteria:
 1. User should land in a different news source if running another target
 2. Headlines should be presented according to the target that was selected
+
+
+
+![image](https://github.com/franciscovidalsantos/CriticalTechWorksChallenge/assets/65774935/65babba4-143f-4b04-b2b6-b91df94b2442)
