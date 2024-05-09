@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.criticaltechworkschallenge.Article
+import com.example.criticaltechworkschallenge.dto.Article
 import com.example.criticaltechworkschallenge.MainActivity
 import com.example.criticaltechworkschallenge.R
 import com.example.criticaltechworkschallenge.adapters.NewsAdapter

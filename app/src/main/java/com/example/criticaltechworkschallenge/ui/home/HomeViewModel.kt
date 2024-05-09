@@ -3,11 +3,11 @@ package com.example.criticaltechworkschallenge.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.criticaltechworkschallenge.Article
 import com.example.criticaltechworkschallenge.Constants
-import com.example.criticaltechworkschallenge.NewsResponse
-import com.example.criticaltechworkschallenge.NewsService
+import com.example.criticaltechworkschallenge.dto.Article
+import com.example.criticaltechworkschallenge.dto.NewsResponse
 import com.example.criticaltechworkschallenge.enums.SourcesEnum
+import com.example.criticaltechworkschallenge.services.NewsService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,10 +29,20 @@ class HomeViewModel : ViewModel() {
     }
     val newsSource: LiveData<SourcesEnum> = _newsSource
 
-    fun updateSource(newSource: SourcesEnum) {
-        _newsSource.value = newSource
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constants.URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    private val newsService: NewsService by lazy {
+        retrofit.create(NewsService::class.java)
     }
 
+    fun updateSource(newSource: SourcesEnum) {
+        _newsSource.value = newSource
+        loadHeadlines()
+    }
 
     init {
         loadHeadlines()
@@ -42,13 +52,8 @@ class HomeViewModel : ViewModel() {
 
         val currentSource = newsSource.value?.id.toString()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(NewsService::class.java)
-        val call = service.getTopHeadlines(
+        // API Call
+        val call = newsService.getTopHeadlines(
             currentSource,
             Constants.API_KEY
         )
@@ -60,11 +65,13 @@ class HomeViewModel : ViewModel() {
                     _articles.postValue(articles)
                 } else {
                     // Handle error
+                    // Toast.makeText(context, "Failed to load headlines: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 // Handle failure
+                // Toast.makeText(context, "Failed to load headlines: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

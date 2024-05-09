@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.criticaltechworkschallenge.Article
+import com.example.criticaltechworkschallenge.dto.Article
 import com.example.criticaltechworkschallenge.R
 import com.squareup.picasso.Picasso
 
@@ -49,7 +49,7 @@ class NewsAdapter(private val articles: MutableList<Article>) :
     }
 
     interface OnItemClickListener {
-        fun onItemClick(article:Article)
+        fun onItemClick(article: Article)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
