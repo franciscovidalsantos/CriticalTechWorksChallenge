@@ -1,8 +1,10 @@
 package com.example.criticaltechworkschallenge.ui.home
 
+import android.app.Application
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.criticaltechworkschallenge.Constants
 import com.example.criticaltechworkschallenge.dto.Article
 import com.example.criticaltechworkschallenge.dto.NewsResponse
@@ -14,7 +16,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _buttonText = MutableLiveData<String>().apply {
         value = "Click to select a new source"
@@ -65,13 +67,13 @@ class HomeViewModel : ViewModel() {
                     _articles.postValue(articles)
                 } else {
                     // Handle error
-                    // Toast.makeText(context, "Failed to load headlines: ${response.message()}", Toast.LENGTH_SHORT).show()
+                     Toast.makeText(getApplication(), "Failed to load headlines: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 // Handle failure
-                // Toast.makeText(context, "Failed to load headlines: ${t.message}", Toast.LENGTH_SHORT).show()
+                 Toast.makeText(getApplication(), "Failed to load headlines: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
