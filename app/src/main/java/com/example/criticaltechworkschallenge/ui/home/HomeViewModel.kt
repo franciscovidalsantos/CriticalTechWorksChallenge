@@ -26,9 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _articles = MutableLiveData<List<Article>>()
     val articles: LiveData<List<Article>> = _articles
 
-    private val _newsSource = MutableLiveData<SourcesEnum>().apply {
-        value = SourcesEnum.BBC_NEWS // default source
-    }
+    private val _newsSource = MutableLiveData<SourcesEnum>()
     val newsSource: LiveData<SourcesEnum> = _newsSource
 
     private val retrofit: Retrofit by lazy {
@@ -47,6 +45,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
+        _newsSource.value = SourcesEnum.BBC_NEWS // default source
         loadHeadlines()
     }
 
@@ -67,14 +66,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     _articles.postValue(articles)
                 } else {
                     // Handle error
-                     Toast.makeText(getApplication(), "Failed to load headlines: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    showToast("Failed to load headlines: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
                 // Handle failure
-                 Toast.makeText(getApplication(), "Failed to load headlines: ${t.message}", Toast.LENGTH_SHORT).show()
+                showToast("Failed to load headlines: ${t.message}")
             }
         })
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show()
     }
 }

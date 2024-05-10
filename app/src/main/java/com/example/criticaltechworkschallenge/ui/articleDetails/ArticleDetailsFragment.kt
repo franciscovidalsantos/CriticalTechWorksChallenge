@@ -32,7 +32,7 @@ class ArticleDetailsFragment : Fragment() {
 
         _vm = ViewModelProvider(this)[ArticleDetailsViewModel::class.java]
         val parent = activity as MainActivity;
-        parent.supportActionBar?.title = "Article Details"
+        parent.supportActionBar?.title = _vm.title.value
 
         // parent.supportActionBar?.setDisplayHomeAsUpEnabled(true) // enable back button in top bar - its activated by default
         return init(view)

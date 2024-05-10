@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 
 class ArticleDetailsViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is newsDetails Fragment"
+    private val _title = MutableLiveData<String>().apply {
+        value = "Article Details"
     }
-    val text: LiveData<String> = _text
+    val title: LiveData<String> = _title
 
 }
