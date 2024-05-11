@@ -7,12 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.criticaltechworkschallenge.Constants
 import com.example.criticaltechworkschallenge.dto.Article
-import com.example.criticaltechworkschallenge.dto.NewsResponse
 import com.example.criticaltechworkschallenge.enums.SourcesEnum
 import com.example.criticaltechworkschallenge.services.NewsService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -30,9 +30,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val newsSource: LiveData<SourcesEnum> = _newsSource
 
     private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(Constants.URL)
-            .addConverterFactory(GsonConverterFactory.create())
+        Retrofit.Builder().baseUrl(Constants.URL).addConverterFactory(GsonConverterFactory.create())
             .build()
     }
     private val newsService: NewsService by lazy {
@@ -50,17 +48,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadHeadlines() {
-
         val currentSource = newsSource.value?.id.toString()
 
-        // API Call
-        val call = newsService.getTopHeadlines(
-            currentSource,
-            Constants.API_KEY
-        )
-
-        call.enqueue(object : Callback<NewsResponse> {
-            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // API Call
+                val response = withContext(Dispatchers.IO) {
+                    newsService.getTopHeadlines(
+                        currentSource, Constants.API_KEY
+                    ).execute()
+                }
                 if (response.isSuccessful) {
                     val articles = response.body()?.articles ?: emptyList()
                     _articles.postValue(articles)
@@ -68,13 +65,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     // Handle error
                     showToast("Failed to load headlines: ${response.message()}")
                 }
+            } catch (e: Exception) {
+                // Handle exception
+                showToast("Exception error: ${e.message}")
             }
-
-            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
-                // Handle failure
-                showToast("Failed to load headlines: ${t.message}")
-            }
-        })
+        }
     }
 
     private fun showToast(message: String) {

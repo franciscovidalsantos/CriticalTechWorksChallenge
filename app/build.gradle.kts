@@ -64,6 +64,8 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
 
 
 }

@@ -10,6 +10,7 @@ import com.example.criticaltechworkschallenge.services.NewsService
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Before
 import org.junit.Rule
@@ -45,49 +46,74 @@ class HomeViewModelTest {
 
     @Test
     fun `test updateSource`() {
-        val newSource = SourcesEnum.BBC_NEWS
+        // Arrange
+        val newSource = SourcesEnum.CNN
+
+        // Act
         viewModel.updateSource(newSource)
 
-        assert(viewModel.newsSource.value == newSource)
+        // Assert
+        assertEquals(newSource, viewModel.newsSource.value)
     }
 
     @Test
     fun `test loadHeadlines success`() {
+
+        // Arrange
+        val articles = listOf(
+            Article("title", "description", "url", "urlToImage", "content"),
+            Article("title2", "description2", "url2", "urlToImage2", "content2"),
+        )
+
         val response = mock<Response<NewsResponse>>()
-        val articles = listOf<Article>()
         whenever(response.body()).thenReturn(NewsResponse("ok", 1, articles))
+        setupEnqueueSuccessResponse(response)
+
+        // Act
+        viewModel.loadHeadlines()
+
+        // Assert / Verify
+        // verify(newsService, times(1)).getTopHeadlines(SourcesEnum.CNN.id, Constants.API_KEY)
+        assertNotNull(viewModel.articles) // list contains elements
+    }
+
+    private fun setupEnqueueSuccessResponse(response: Response<NewsResponse>) {
         whenever(call.enqueue(any())).thenAnswer {
             val callback = it.arguments[0] as Callback<NewsResponse>
             callback.onResponse(call, response)
         }
         whenever(
             newsService.getTopHeadlines(
-                SourcesEnum.BBC_NEWS.id,
+                SourcesEnum.CNN.id,
                 Constants.API_KEY
             )
         ).thenReturn(call)
-
-        viewModel.loadHeadlines()
-
-        assertNotNull(viewModel.articles) // list contains elements
     }
 
     @Test
     fun `test loadHeadlines failure`() {
+        // Arrange
         val response = mock<Response<NewsResponse>>()
+        setupEnqueueFailureResponse(response)
+
+        // Act
+        viewModel.loadHeadlines()
+
+        // Assert / Verify
+        // verify(newsService, times(1)).getTopHeadlines(SourcesEnum.CNN.id, Constants.API_KEY)
+        assertNotNull(viewModel.loadHeadlines())
+    }
+
+    private fun setupEnqueueFailureResponse(response: Response<NewsResponse>) {
         whenever(call.enqueue(any())).thenAnswer {
             val callback = it.arguments[0] as Callback<NewsResponse>
-            callback.onResponse(call, response)
+            callback.onFailure(call, Throwable("Test Failure"))
         }
         whenever(
             newsService.getTopHeadlines(
-                SourcesEnum.BBC_NEWS.id,
+                SourcesEnum.CNN.id,
                 Constants.API_KEY
             )
         ).thenReturn(call)
-
-        viewModel.loadHeadlines()
-
-        assertNotNull(viewModel.loadHeadlines())
     }
 }
